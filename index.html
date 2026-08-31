@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#090806" />
+
+  <title>Rocky Cricket Astro</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(190, 145, 52, 0.16), transparent 38%),
+        radial-gradient(circle at 0% 100%, rgba(126, 84, 24, 0.10), transparent 35%),
+        #080706;
+      color: #f8f2e7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Ambient background */
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(to bottom, black, transparent 90%);
+      pointer-events: none;
+    }
+
+    .page {
+      width: min(94vw, 430px);
+      height: min(94vh, 760px);
+      min-height: 590px;
+      max-height: 760px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Main premium card */
+    .card {
+      width: 100%;
+      height: 100%;
+      max-height: 730px;
+      border: 1px solid rgba(210, 169, 82, 0.30);
+      border-radius: 28px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.012)),
+        rgba(15, 12, 8, .91);
+      box-shadow:
+        0 35px 90px rgba(0,0,0,.70),
+        inset 0 1px 0 rgba(255,255,255,.08),
+        0 0 0 1px rgba(255,255,255,.018);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
+      padding: 24px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      top: -160px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #c99a43;
+      filter: blur(90px);
+      opacity: .14;
+      pointer-events: none;
+    }
+
+    .gold-line {
+      width: 46px;
+      height: 2px;
+      border-radius: 100px;
+      background: linear-gradient(90deg, transparent, #e0b65c, transparent);
+      margin-bottom: 15px;
+    }
+
+    /* Logo */
+    .logo-wrap {
+      width: 76px;
+      height: 76px;
+      border-radius: 22px;
+      padding: 3px;
+      background: linear-gradient(145deg, #f1cc78, #86611e, #e6b957);
+      box-shadow:
+        0 12px 35px rgba(202, 153, 57, .19),
+        0 0 0 5px rgba(213, 169, 79, .055);
+      margin-bottom: 13px;
+      animation: floatLogo 4s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    .logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 19px;
+      display: block;
+      background: #111;
+    }
+
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .eyebrow {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #c9a35a;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    h1 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(27px, 8vw, 37px);
+      line-height: 1;
+      text-align: center;
+      letter-spacing: -.7px;
+      background: linear-gradient(180deg, #fff8e8 10%, #d7ad5a 85%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #aaa298;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.45;
+      max-width: 290px;
+      margin-bottom: 17px;
+    }
+
+    /* Stats */
+    .stats {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat {
+      position: relative;
+      min-height: 75px;
+      padding: 12px 10px;
+      border-radius: 16px;
+      border: 1px solid rgba(209, 165, 76, .19);
+      background: linear-gradient(135deg, rgba(212,169,79,.075), rgba(255,255,255,.018));
+      overflow: hidden;
+    }
+
+    .stat::after {
+      content: "";
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      right: -30px;
+      bottom: -35px;
+      border-radius: 50%;
+      background: #d9ad57;
+      filter: blur(30px);
+      opacity: .08;
+    }
+
+    .stat-label {
+      color: #958e84;
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1.3px;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+      color: #f0ca76;
+    }
+
+    .stat-small {
+      font-family: "DM Sans", sans-serif;
+      font-size: 8px;
+      color: #8d867d;
+      margin-top: 5px;
+    }
+
+    /* Feature strip */
+    .feature {
+      width: 100%;
+      min-height: 58px;
+      border-radius: 16px;
+      padding: 10px 13px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background:
+        linear-gradient(90deg, rgba(206,160,65,.12), rgba(206,160,65,.035));
+      border: 1px solid rgba(212,166,75,.18);
+    }
+
+    .feature-icon {
+      width: 33px;
+      height: 33px;
+      flex: 0 0 33px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(216,172,80,.10);
+      border: 1px solid rgba(216,172,80,.20);
+      color: #e0b45e;
+      font-size: 15px;
+    }
+
+    .feature-text strong {
+      display: block;
+      font-size: 11px;
+      color: #eee7da;
+      margin-bottom: 2px;
+    }
+
+    .feature-text span {
+      font-size: 8px;
+      color: #898279;
+    }
+
+    /* CTA */
+    .cta {
+      width: 100%;
+      text-decoration: none;
+      position: relative;
+      border-radius: 17px;
+      padding: 15px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: linear-gradient(105deg, #f0ca78, #bc8730);
+      color: #1a1207;
+      box-shadow:
+        0 13px 30px rgba(196, 145, 49, .20),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      overflow: hidden;
+      margin-top: auto;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 18px 35px rgba(196, 145, 49, .28),
+        inset 0 1px 0 rgba(255,255,255,.55);
+    }
+
+    .cta::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.34),
+        transparent
+      );
+      transform: skewX(-20deg);
+      animation: shine 3.5s infinite;
+    }
+
+    @keyframes shine {
+      0%, 60% { left: -100%; }
+      100% { left: 160%; }
+    }
+
+    .cta-copy {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-title {
+      display: block;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: .2px;
+    }
+
+    .cta-sub {
+      display: block;
+      font-size: 8px;
+      opacity: .70;
+      margin-top: 2px;
+    }
+
+    .arrow {
+      position: relative;
+      z-index: 1;
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      background: rgba(20,14,6,.13);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    /* Footer */
+    .footer {
+      font-size: 7px;
+      color: #625d56;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+
+    /* Live notification */
+    .live-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translate(-50%, 30px);
+      width: min(88vw, 350px);
+      padding: 9px 12px;
+      border-radius: 13px;
+      border: 1px solid rgba(220,177,88,.22);
+      background: rgba(18,15,11,.92);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      box-shadow: 0 15px 40px rgba(0,0,0,.45);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      opacity: 0;
+      z-index: 50;
+      transition: all .45s cubic-bezier(.2,.8,.2,1);
+      pointer-events: none;
+    }
+
+    .live-toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      flex: 0 0 7px;
+      background: #7bcf7b;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(123,207,123,.08);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .35; }
+    }
+
+    .toast-text {
+      font-size: 8px;
+      color: #aaa39a;
+      line-height: 1.35;
+    }
+
+    .toast-text b {
+      color: #eee7d9;
+      font-weight: 700;
+    }
+
+    /* Desktop */
+    @media (min-width: 600px) {
+      .page {
+        width: 410px;
+        height: 720px;
+      }
+    }
+
+    /* Smaller phones */
+    @media (max-height: 680px) {
+      .page {
+        width: 94vw;
+        height: 94vh;
+        min-height: 0;
+      }
+
+      .card {
+        padding: 16px 15px 12px;
+        border-radius: 23px;
+      }
+
+      .logo-wrap {
+        width: 62px;
+        height: 62px;
+        border-radius: 18px;
+        margin-bottom: 9px;
+      }
+
+      .logo-wrap img {
+        border-radius: 15px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .subtitle {
+        margin-bottom: 10px;
+      }
+
+      .stat {
+        min-height: 66px;
+        padding: 9px;
+      }
+
+      .stat-value {
+        font-size: 21px;
+      }
+
+      .feature {
+        min-height: 52px;
+        margin-bottom: 9px;
+      }
+
+      .cta {
+        padding: 12px 14px;
+      }
+    }
+  </style>
+ <!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1083321711057130');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1083321711057130&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+</head>
+
+<body>
+
+  <main class="page">
+
+    <section class="card">
+
+      <div class="gold-line"></div>
+
+      <div class="logo-wrap">
+        <img src="logo.png" alt="Rocky Cricket Astro Logo">
+      </div>
+
+      <div class="eyebrow">PRIVATE CRICKET ANALYSIS</div>
+
+      <h1>Rocky Cricket Astro</h1>
+
+      <p class="subtitle">
+        Sharp cricket analysis, disciplined insights &amp;
+        years of market experience — all in one private community.
+      </p>
+
+      <div class="stats">
+
+        <div class="stat">
+          <div class="stat-label">Punter Trust Score</div>
+          <div class="stat-value">97%</div>
+          <div class="stat-small">Community confidence</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Analysis Accuracy</div>
+          <div class="stat-value">98.4%</div>
+          <div class="stat-small">Tracked insights</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Experience</div>
+          <div class="stat-value">8 YRS</div>
+          <div class="stat-small">Successful analysis</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Focus</div>
+          <div class="stat-value">24/7</div>
+          <div class="stat-small">Cricket coverage</div>
+        </div>
+
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">✦</div>
+        <div class="feature-text">
+          <strong>Built for serious cricket followers</strong>
+          <span>Match reads • Market movements • Pre-match analysis</span>
+        </div>
+      </div>
+
+      <a
+        class="cta"
+        href="https://t.me/+bAoxWXJjXYY2MzI1"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <div class="cta-copy">
+          <span class="cta-title">ENTER THE PRIVATE CIRCLE →</span>
+          <span class="cta-sub">Join Rocky Cricket Astro on Telegram</span>
+        </div>
+
+        <div class="arrow">↗</div>
+      </a>
+
+      <div class="footer">
+        Independent cricket analysis • Telegram community
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Live Activity -->
+  <div class="live-toast" id="liveToast">
+    <span class="live-dot"></span>
+    <div class="toast-text" id="toastText"></div>
+  </div>
+
+
+  <script>
+    const names = [
+      "Raj",
+      "Nawaz",
+      "Mohit",
+      "Radhe",
+      "Bijay",
+      "Kumar",
+      "Aman",
+      "Rohit",
+      "Arjun",
+      "Vikas",
+      "Sameer",
+      "Sahil",
+      "Ankit",
+      "Dev"
+    ];
+
+    const cities = [
+      "Ghaziabad",
+      "Delhi",
+      "Pune",
+      "Hyderabad",
+      "Chennai",
+      "Kolkata",
+      "Jaipur",
+      "Lucknow",
+      "Mumbai",
+      "Indore",
+      "Patna",
+      "Bengaluru",
+      "Noida",
+      "Ahmedabad"
+    ];
+
+    const actions = [
+      "just joined the private circle",
+      "joined from",
+      "is checking today's analysis",
+      "just entered the community",
+      "joined Rocky Cricket Astro"
+    ];
+
+    const toast = document.getElementById("liveToast");
+    const toastText = document.getElementById("toastText");
+
+    function randomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function showLiveActivity() {
+      const name = randomItem(names);
+      const city = randomItem(cities);
+      const action = randomItem(actions);
+
+      toastText.innerHTML =
+        `<b>${name}</b> from <b>${city}</b> ${action}`;
+
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3600);
+    }
+
+    // First popup after a short delay
+    setTimeout(showLiveActivity, 2600);
+
+    // Continue at random intervals
+    function scheduleNext() {
+      const delay = Math.floor(Math.random() * 4500) + 5500;
+
+      setTimeout(() => {
+        showLiveActivity();
+        scheduleNext();
+      }, delay);
+    }
+
+    scheduleNext();
+  </script>
+
+</body>
+</html>
